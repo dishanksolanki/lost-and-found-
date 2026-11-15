@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Playfair Display", Georgia, Cambria, "Times New Roman", serif;
+  --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-ivory: #F8F6F0;
+  --color-navy: #172B45;
+  --color-navy-hover: #1E3758;
+  --color-gold: #B99A55;
+  --color-gold-soft: #EFE8D6;
+  --color-burgundy: #813D42;
+  --color-burgundy-soft: #F7ECEC;
+  --color-charcoal: #252A32;
+  --color-muted: #777777;
+  --color-warm-border: #E8E4DA;
+}
+
+@layer base {
+  html, body {
+    background-color: #F8F6F0;
+    color: #252A32;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, .font-display {
+    font-family: var(--font-serif);
+    text-wrap: balance;
+  }
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Subtle institutional scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F8F6F0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D5CFC2;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #B99A55;
+}
