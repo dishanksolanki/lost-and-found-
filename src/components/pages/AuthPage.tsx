@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Eye, EyeOff, Lock, Mail, ShieldCheck, UserCheck } from 'lucide-react';
+import { ArrowLeft, Eye, EyeOff, Lock, Mail, RotateCcw, ShieldCheck, UserCheck } from 'lucide-react';
 import { BrandLogo } from '../ui/BrandLogo';
 import { Button, FormLabel, inputBaseClasses } from '../ui/DesignSystem';
 import { portalApi } from '../../lib/api';
@@ -335,27 +335,53 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess }) => {
                 {portalRole === 'admin' ? 'Sign In to Admin Console' : 'Sign In to Student Portal'}
               </Button>
 
-              <div className="pt-4 border-t border-[#E8E4DA] text-xs text-[#777777] space-y-1.5">
-                <div className="font-medium text-[#252A32]">Campus Evaluation Accounts</div>
+              <div className="pt-4 border-t border-[#E8E4DA] text-xs text-[#777777] space-y-2">
                 <div className="flex items-center justify-between gap-2">
-                  <span>Student: clara.vance@aldenbrook.edu</span>
+                  <span className="font-semibold text-[#252A32]">Demo Evaluation Accounts</span>
                   <button
                     type="button"
-                    onClick={() => applyRolePreset('student')}
-                    className="text-[#172B45] font-medium underline underline-offset-2 hover:text-[#B99A55] cursor-pointer"
+                    onClick={() => {
+                      portalApi.resetDemoData();
+                      applyRolePreset(portalRole);
+                      setInfoMessage('Demo records and accounts have been restored to defaults.');
+                    }}
+                    className="inline-flex items-center gap-1 text-[11px] font-medium text-[#777777] hover:text-[#172B45] cursor-pointer"
                   >
-                    Use Student
+                    <RotateCcw className="w-3 h-3" />
+                    <span>Reset Demo Data</span>
                   </button>
                 </div>
-                <div className="flex items-center justify-between gap-2">
-                  <span>Admin: admin@aldenbrook.edu</span>
-                  <button
-                    type="button"
-                    onClick={() => applyRolePreset('admin')}
-                    className="text-[#172B45] font-medium underline underline-offset-2 hover:text-[#B99A55] cursor-pointer"
-                  >
-                    Use Admin
-                  </button>
+                <div className="p-2.5 rounded bg-[#F8F6F0] border border-[#E8E4DA] space-y-1.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="min-w-0">
+                      <span className="font-medium text-[#252A32]">Student:</span>{' '}
+                      <span className="font-mono text-[11px]">clara.vance@aldenbrook.edu</span>
+                      <span className="text-[#777777]"> / </span>
+                      <span className="font-mono text-[11px]">Student2026!</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => applyRolePreset('student')}
+                      className="text-[#172B45] font-medium underline underline-offset-2 hover:text-[#B99A55] shrink-0 cursor-pointer"
+                    >
+                      Use
+                    </button>
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="min-w-0">
+                      <span className="font-medium text-[#252A32]">Admin:</span>{' '}
+                      <span className="font-mono text-[11px]">admin@aldenbrook.edu</span>
+                      <span className="text-[#777777]"> / </span>
+                      <span className="font-mono text-[11px]">Admin2026!</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => applyRolePreset('admin')}
+                      className="text-[#172B45] font-medium underline underline-offset-2 hover:text-[#B99A55] shrink-0 cursor-pointer"
+                    >
+                      Use
+                    </button>
+                  </div>
                 </div>
               </div>
             </form>

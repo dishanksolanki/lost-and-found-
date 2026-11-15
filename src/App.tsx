@@ -186,6 +186,12 @@ export default function App() {
     setBrowseSearchQuery('');
   };
 
+  const handleResetDemoData = () => {
+    portalApi.resetDemoData();
+    handleLogout();
+    showToast('Demo data restored to initial campus records.');
+  };
+
   const handleNavigate = (view: AppView, targetId?: string) => {
     if (view === 'item-details' && targetId) {
       setSelectedItemId(targetId);
@@ -359,6 +365,7 @@ export default function App() {
           myReports={myReports}
           myClaims={myClaims}
           onProfileUpdated={(updated) => setUser(updated)}
+          onResetDemoData={handleResetDemoData}
           onNotify={showToast}
         />
       )}

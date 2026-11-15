@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Building2, Edit3, Mail, Phone, Shield, User as UserIcon } from 'lucide-react';
+import { Building2, Edit3, Mail, Phone, RotateCcw, Shield, User as UserIcon } from 'lucide-react';
 import {
   Button,
   Card,
   FormLabel,
+  Modal,
   StatusBadge,
   inputBaseClasses,
 } from '../ui/DesignSystem';
@@ -15,6 +16,7 @@ interface ProfilePageProps {
   myReports: LostFoundItem[];
   myClaims: ClaimRecord[];
   onProfileUpdated: (user: User) => void;
+  onResetDemoData: () => void;
   onNotify: (message: string, type?: 'success' | 'error') => void;
 }
 
@@ -23,9 +25,11 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   myReports,
   myClaims,
   onProfileUpdated,
+  onResetDemoData,
   onNotify,
 }) => {
   const [editing, setEditing] = useState(false);
+  const [resetModalOpen, setResetModalOpen] = useState(false);
   const [name, setName] = useState(user.name);
   const [department, setDepartment] = useState(user.department);
   const [phone, setPhone] = useState(user.phone);
@@ -246,6 +250,58 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
           </div>
         </Card>
       </div>
+
+      {/* Demonstration Data Reset */}
+      <Card padding="md">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h3 className="font-serif text-lg font-semibold text-[#172B45]">
+              Browser Demonstration Storage
+            </h3>
+            <p className="text-xs text-[#777777] mt-1 leading-relaxed">
+              All accounts, item reports, claims, and notifications are stored locally in your
+              browser. Restore the original campus sample data at any time.
+            </p>
+          </div>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => setResetModalOpen(true)}
+            className="shrink-0"
+          >
+            <RotateCcw className="w-3.5 h-3.5 text-[#813D42]" />
+            <span>Reset Demo Data</span>
+          </Button>
+        </div>
+      </Card>
+
+      <Modal
+        open={resetModalOpen}
+        onClose={() => setResetModalOpen(false)}
+        title="Reset Demonstration Data"
+        subtitle="Restore default campus registry records"
+        maxWidth="md"
+      >
+        <p className="text-sm text-[#252A32] leading-relaxed">
+          This will clear all locally saved reports, claims, and custom registered accounts from
+          your browser and restore the initial Aldenbrook University sample dataset. You will be
+          returned to the sign-in screen.
+        </p>
+        <div className="mt-6 pt-4 border-t border-[#E8E4DA] flex justify-end gap-3">
+          <Button variant="secondary" onClick={() => setResetModalOpen(false)}>
+            Cancel
+          </Button>
+          <Button
+            variant="burgundy"
+            onClick={() => {
+              setResetModalOpen(false);
+              onResetDemoData();
+            }}
+          >
+            Confirm Reset
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 };

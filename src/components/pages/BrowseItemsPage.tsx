@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Filter, RotateCcw, Search } from 'lucide-react';
 import {
   Button,
@@ -11,7 +11,7 @@ import {
 } from '../ui/DesignSystem';
 import { CAMPUS_LOCATIONS, ITEM_CATEGORIES } from '../../data/itemAssets';
 import { formatDisplayDate } from '../../lib/api';
-import type { AppView, LostFoundItem } from '../../types';
+import type { AppView, ItemStatus, LostFoundItem } from '../../types';
 
 interface BrowseItemsPageProps {
   items: LostFoundItem[];
@@ -28,16 +28,22 @@ export const BrowseItemsPage: React.FC<BrowseItemsPageProps> = ({
 }) => {
   const [search, setSearch] = useState(initialSearchQuery);
   const [typeFilter, setTypeFilter] = useState<'all' | 'lost' | 'found'>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | ItemStatus>('all');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [locationFilter, setLocationFilter] = useState<string>('all');
   const [dateFilter, setDateFilter] = useState<string>('');
   const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'title'>('newest');
+
+  useEffect(() => {
+    setSearch(initialSearchQuery);
+  }, [initialSearchQuery]);
 
   const filteredItems = useMemo(() => {
     const q = search.trim().toLowerCase();
     const list = items.filter((item) => {
       if (item.status === 'archived') return false;
       if (typeFilter !== 'all' && item.type !== typeFilter) return false;
+      if (statusFilter !== 'all' && item.status !== statusFilter) return false;
       if (categoryFilter !== 'all' && item.category !== categoryFilter) return false;
       if (locationFilter !== 'all' && item.location !== locationFilter) return false;
       if (dateFilter && item.date < dateFilter) return false;
@@ -57,11 +63,12 @@ export const BrowseItemsPage: React.FC<BrowseItemsPageProps> = ({
       sorted.sort((a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt));
     }
     return sorted;
-  }, [items, search, typeFilter, categoryFilter, locationFilter, dateFilter, sortBy]);
+  }, [items, search, typeFilter, statusFilter, categoryFilter, locationFilter, dateFilter, sortBy]);
 
   const hasActiveFilters =
     search.trim() !== '' ||
     typeFilter !== 'all' ||
+    statusFilter !== 'all' ||
     categoryFilter !== 'all' ||
     locationFilter !== 'all' ||
     dateFilter !== '';
@@ -69,6 +76,7 @@ export const BrowseItemsPage: React.FC<BrowseItemsPageProps> = ({
   const resetFilters = () => {
     setSearch('');
     setTypeFilter('all');
+    setStatusFilter('all');
     setCategoryFilter('all');
     setLocationFilter('all');
     setDateFilter('');
@@ -121,13 +129,13 @@ export const BrowseItemsPage: React.FC<BrowseItemsPageProps> = ({
 
         {/* Search + Dropdown Filters */}
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3">
-          <div className="lg:col-span-4 relative">
+          <div className="lg:col-span-3 relative">
             <Search className="w-4 h-4 text-[#777777] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search items, descriptions, or code..."
+              placeholder="Search items or code..."
               aria-label="Search listings"
               className={`${inputBaseClasses} pl-10`}
             />
@@ -146,6 +154,20 @@ export const BrowseItemsPage: React.FC<BrowseItemsPageProps> = ({
                   {cat}
                 </option>
               ))}
+            </select>
+          </div>
+
+          <div className="lg:col-span-2">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value as 'all' | ItemStatus)}
+              aria-label="Filter by status"
+              className={inputBaseClasses}
+            >
+              <option value="all">All Statuses</option>
+              <option value="open">Open Case</option>
+              <option value="claimed">Claim in Review</option>
+              <option value="returned">Returned</option>
             </select>
           </div>
 
@@ -176,16 +198,16 @@ export const BrowseItemsPage: React.FC<BrowseItemsPageProps> = ({
             />
           </div>
 
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-1">
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as 'newest' | 'oldest' | 'title')}
               aria-label="Sort listings"
               className={inputBaseClasses}
             >
-              <option value="newest">Sort: Newest First</option>
-              <option value="oldest">Sort: Oldest First</option>
-              <option value="title">Sort: Title (A–Z)</option>
+              <option value="newest">Newest</option>
+              <option value="oldest">Oldest</option>
+              <option value="title">A–Z</option>
             </select>
           </div>
         </div>
